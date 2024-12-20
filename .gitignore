@@ -163,3 +163,4 @@ cython_debug/
 config/tg_bot_db_demo.sqlite3
 config/config.json
 config/tg_bot_db.sqlite3
+tg_cmd_bot.session

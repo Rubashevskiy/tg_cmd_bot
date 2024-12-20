@@ -6,13 +6,6 @@ from module.core_config import CoreConfig
 from module.core_class import DbTgConn
 from module.core_exception import CoreException
 
-py_logger = logging.getLogger(__name__)
-py_logger.setLevel(logging.INFO)
-py_handler = logging.FileHandler(os.path.join('.', 'logs', 'config_bot.log'), mode='a')
-py_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-py_handler.setFormatter(py_formatter)
-py_logger.addHandler(py_handler)
-
 # DEMO DATA
 conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
 config_path = os.path.join('.', 'config', 'config_demo.json')
@@ -21,6 +14,12 @@ config_path = os.path.join('.', 'config', 'config_demo.json')
 #conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
 #config_path = os.path.join('.', 'config', 'config.json')
 
+py_logger = logging.getLogger(__name__)
+py_logger.setLevel(logging.INFO)
+py_handler = logging.FileHandler(os.path.join('.', 'logs', 'config_bot.log'), mode='a')
+py_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+py_handler.setFormatter(py_formatter)
+py_logger.addHandler(py_handler)
 
 def read_json(path: str) -> dict:
     try:
