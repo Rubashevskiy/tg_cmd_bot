@@ -1,0 +1,10 @@
+{
+    "connect": {
+        "api_id" : 0,
+        "api_hash" : "str_api_hash",
+        "session" : "str_session_name",
+        "token" : "str_secret_token",
+        "root_uid" : "str_root_user_name",
+        "info" : "str_info"
+    }
+}
