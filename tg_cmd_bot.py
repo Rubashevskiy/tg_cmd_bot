@@ -9,15 +9,16 @@ from telethon.errors import FloodWaitError
 import asyncio
 
 from module.core import Core
+from module.core_class import RequestType, ReplyType
 from module.core_exception import CoreException
 
 # DEMO DATA
-conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
-session = "str_session_name"
+#conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
+#session = "str_session_name"
 
 # USER DATA
-#conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
-#session = "tg_cmd_bot"
+conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
+session = "tg_cmd_bot"
 
 py_logger = logging.getLogger(__name__)
 py_logger.setLevel(logging.INFO)
@@ -44,11 +45,25 @@ except Exception as x:
 
 
 async def core_request(request: dict):
-    print(request)
-
+    # Processing the request and returning data
+    try:
+        async with client.conversation(request['chat_id']) as conv:
+            for reply in core.request(request):
+                if ReplyType.message == reply['type']:
+                    for msg in reply['message']:
+                        await conv.send_message(msg)
+                elif ReplyType.error == reply['type']:
+                    for err in reply['error']:
+                        await conv.send_message(err)
+                        py_logger.error(f'''<{request['username']}> {err} <{request['type']}> <{request['data']}>''')
+                elif ReplyType.menu == reply['type']:
+                    pass
+    except CoreException as e:
+        py_logger.error(e.error)
+        exit(4)
 
 async def handle_system_message():
-    '''Automatic sending of system messages'''
+    # Automatic sending of system messages
     while True:
         try:
             pass
@@ -68,7 +83,7 @@ async def handle_new_message(event):
             py_logger.warning(f'''User <{username}> access deny''')
             return
         message = event.message
-        await core_request({"type"     : "text",
+        await core_request({"type"     : RequestType.text,
                             "chat_id"  : message.chat.id,
                             "msg_id"   : message.id,
                             "username" : username,
@@ -88,7 +103,7 @@ async def handle_new_data(event):
             py_logger.warning(f'''User <{username}> access deny''')
             return
         message = event.message
-        await core_request({"type"     : "button",
+        await core_request({"type"     : RequestType.data,
                             "chat_id"  : message.chat.id,
                             "msg_id"   : message.message_id,
                             "username" : username,
