@@ -13,12 +13,12 @@ from module.core_class import RequestType, ReplyType
 from module.core_exception import CoreException
 
 # DEMO DATA
-#conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
-#session = "str_session_name"
+conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
+session = "str_session_name"
 
 # USER DATA
-conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
-session = "tg_cmd_bot"
+#conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
+#session = "tg_cmd_bot"
 
 py_logger = logging.getLogger(__name__)
 py_logger.setLevel(logging.INFO)
