@@ -9,16 +9,16 @@ from telethon.errors import FloodWaitError
 import asyncio
 
 from module.core import Core
-from module.core_class import RequestType, ReplyType
+from module.core_class import TgConfig, Request, RequestType, Reply, ReplyType
 from module.core_exception import CoreException
 
 # DEMO DATA
-conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
-session = "str_session_name"
+#conn_str = f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db_demo.sqlite3')}'''
+#session = "str_session_name"
 
 # USER DATA
-#conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
-#session = "tg_cmd_bot"
+conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
+session = "tg_cmd_bot"
 
 py_logger = logging.getLogger(__name__)
 py_logger.setLevel(logging.INFO)
@@ -32,10 +32,10 @@ try:
     py_logger.info(f'''RUN TG CMD BOT<{session}>: DB <{conn_str}>''')
     core = Core(conn_str=conn_str)
     cfg = core.get_tg_connect(session)
-    client = TelegramClient(session=cfg['session'],
-                            api_id=cfg['api_id'],
-                            api_hash=cfg['api_hash']
-                           ).start(bot_token=cfg['token'])
+    client = TelegramClient(session=cfg.session,
+                            api_id=cfg.api_id,
+                            api_hash=cfg.api_hash
+                           ).start(bot_token=cfg.token)
 except CoreException as e:
     py_logger.critical(e.error)
     exit(1)
@@ -44,20 +44,23 @@ except Exception as x:
     exit(2)
 
 
-async def core_request(request: dict):
+async def core_request(request: Request):
     # Processing the request and returning data
     try:
-        async with client.conversation(request['chat_id']) as conv:
-            for reply in core.request(request):
-                if ReplyType.message == reply['type']:
-                    for msg in reply['message']:
-                        await conv.send_message(msg)
-                elif ReplyType.error == reply['type']:
-                    for err in reply['error']:
-                        await conv.send_message(err)
-                        py_logger.error(f'''<{request['username']}> {err} <{request['type']}> <{request['data']}>''')
-                elif ReplyType.menu == reply['type']:
-                    pass
+        reply = core.request(request)
+        async with client.conversation(request.chat_id) as conv:
+            if ReplyType.message == reply.type:
+                for msg in reply.data:
+                    await conv.send_message(msg)
+            elif ReplyType.error == reply.type:
+                await conv.send_message(reply.text)
+                py_logger.error(f'''<{request.username}> {reply.text} <{request.type}> <{request.data}>''')
+            elif ReplyType.menu == reply.type:
+                buttons = [[Button.inline(btn[0], btn[1])] for btn in reply.data]
+                if  RequestType.text == request.type:
+                    await conv.send_message(reply.text, buttons=buttons)
+                elif RequestType.data == request.type:
+                    await client.edit_message(request.username, request.msg_id, reply.text, buttons=buttons)
     except CoreException as e:
         py_logger.error(e.error)
         exit(4)
@@ -78,17 +81,13 @@ async def handle_new_message(event):
     # Receiving new messages from a user
     try:
         sender = await event.get_sender()
-        username = sender.username
-        if username != cfg['root_uid']:
-            py_logger.warning(f'''User <{username}> access deny''')
-            return
         message = event.message
-        await core_request({"type"     : RequestType.text,
-                            "chat_id"  : message.chat.id,
-                            "msg_id"   : message.id,
-                            "username" : username,
-                            "data"     : str(message.message).upper()
-                           }
+        await core_request(Request(type=RequestType.text,
+                                   chat_id=message.chat.id,
+                                   msg_id=message.id,
+                                   username=sender.username,
+                                   data=str(message.message).upper()
+                                  )
                           )
     except Exception as e:
         py_logger.error(f'''Error processing new message: {e}''')
@@ -98,17 +97,12 @@ async def handle_new_data(event):
     # Receiving new data(button click) from a user
     try:
         sender = await event.get_sender()
-        username = sender.username
-        if username != cfg['root_uid']:
-            py_logger.warning(f'''User <{username}> access deny''')
-            return
-        message = event.message
-        await core_request({"type"     : RequestType.data,
-                            "chat_id"  : message.chat.id,
-                            "msg_id"   : message.message_id,
-                            "username" : username,
-                            "data"     : str(event.data.decode('utf-8')).upper()
-                           }
+        await core_request(Request(type=RequestType.data,
+                                   chat_id= event.chat.id,
+                                   msg_id=event.message_id,
+                                   username=sender.username,
+                                   data=str(event.data.decode('utf-8')).upper()
+                                  )
                           )
     except Exception as e:
         py_logger.error(f'''Error processing new data: {e}''')
