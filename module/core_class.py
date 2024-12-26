@@ -61,8 +61,9 @@ class DbCommand(Base):
     request_text = Column(String, nullable=False)
     reply_type = Column(Integer, nullable=False)
     reply_id = Column(Integer, nullable=False)
+    sorting = Column(Integer, nullable=False)
     info = Column(String, nullable=True)
-    __table_args__ = (UniqueConstraint("request_type", "request_text", name="uniq_cmd"),)
+    __table_args__ = (UniqueConstraint("request_type", "request_text", "reply_type", "reply_id", name="uniq_cmd"),)
 
 class DbMenu(Base):
     __tablename__ = "menu"
@@ -81,9 +82,8 @@ class DbButtons(Base):
     info = Column(String, nullable=True)
 
 class DbPlugin(Base):
-    __tablename__ = "plugin"
+    __tablename__ = "plugins"
     id = Column(Integer, primary_key=True, index=True)
     plugin_uid = Column(String, nullable=False)
     plugin_data = Column(String, nullable=False)
-    sorting = Column(Integer, nullable=False)
-    __table_args__ = (UniqueConstraint("plugin_uid", "plugin_data", name="uniq_plugin"),)
+    __table_args__ = (UniqueConstraint("plugin_uid", name="uniq_plugin"),)

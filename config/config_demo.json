@@ -6,5 +6,93 @@
         "token" : "str_secret_token",
         "root_uid" : "str_root_user_name",
         "info" : "str_info"
-    }
+    },
+    "menu": [
+      {"title" : "Главное меню",
+       "buttons" : [
+          {"btn_text" : "Первое меню",
+           "cmd" : [{"to_menu" : "Первое меню"}]
+          },
+          {"btn_text" : "Второе меню",
+           "cmd" : [{"to_menu" : "Второе меню"}]
+          }
+       ],
+       "info" : "Главное меню"
+      },
+      {"title" : "Первое меню",
+       "buttons" : [
+          {"btn_text" : "Plugin 1",
+           "cmd" : [{"to_plugin" : "plugin_1"}]
+          },
+          {"btn_text" : "Plugin 2",
+           "cmd" : [{"to_plugin" : "plugin_2"}]
+          },
+          {"btn_text" : "Pl-1 and Pl-2",
+           "cmd" : [{"to_plugin" : "plugin_1"},
+                    {"to_plugin" : "plugin_2"}
+                   ]
+          },
+          {"btn_text" : "Главное меню",
+           "cmd" : [{"to_menu" : "Главное меню"}]
+          }
+       ]
+      },
+      {"title" : "Второе меню",
+       "buttons" : [
+          {"btn_text" : "Plugin 3",
+           "cmd" : [{"to_plugin" : "plugin_3"}]
+          },
+          {"btn_text" : "Plugin 4",
+           "cmd" : [{"to_plugin" : "plugin_4"}]
+          },
+          {"btn_text" : "Pl 3 and Pl 4, Первое меню",
+           "cmd" : [{"to_plugin" : "plugin_3"},
+                    {"to_plugin" : "plugin_4"},
+                    {"to_menu" : "Первое меню"}
+                   ]
+          },
+          {"btn_text" : "Главное меню",
+           "cmd" : [{"to_menu" : "Главное меню"}]
+          }
+       ]
+      }
+  ],
+  "plugins": [
+      {"uid": "plugin",
+       "data" : {
+          "test_text": "Test message Plugin Command"
+       }
+      },
+      {"uid": "plugin_1",
+       "data" : {
+          "test_text": "Test message Plugin 1"
+       }
+      },
+      {"uid": "plugin_2",
+       "data" : {
+          "test_text": "Test message Plugin 2"
+       }
+      },
+      {"uid": "plugin_3",
+       "data" : {
+          "test_text": "Test message Plugin 3"
+       }
+      },
+      {"uid": "plugin_4",
+       "data" : {
+          "test_text": "Test message Plugin 4"
+       }
+      }
+  ],
+  "command" : [
+      {"text": "/start",
+       "cmd" : [{"to_menu" : "Главное меню"}]
+      },
+      {"text": "menu",
+       "cmd" : [{"to_menu" : "Главное меню"}]
+      },
+      {"text": "plugin",
+       "cmd" : [{"to_plugin" : "plugin"}]
+      }
+  ]
 }

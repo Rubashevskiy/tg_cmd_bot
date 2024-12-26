@@ -34,19 +34,22 @@ class Core():
         except IntegrityError:
             raise CoreException(f'''ERROR: Get tg connect <{session}>''')
 
-    def request(self, request: Request) -> Reply:
+    def request(self, request: Request) -> list[Reply]:
         # Processing a request from a user
         try:
             with Session(autoflush=False, bind=self.engine) as conn:
-                cmd = conn.query(DbCommand).filter(and_(DbCommand.request_type == request.type.value), DbCommand.request_text== request.data).one_or_none()
-                if cmd is not None:
-                    if cmd.reply_type == CmdType.menu.value:
-                        return self.__get_menu__(cmd.reply_id)
+                cmd_list = conn.query(DbCommand).filter(and_(DbCommand.request_type == request.type.value), DbCommand.request_text== request.data).order_by(DbCommand.sorting).all()
+                if 0 < len(cmd):
+                    result = []
+                    for cmd in cmd_list:
+                        if cmd.reply_type == CmdType.menu.value:
+                            result.append(self.__get_menu__(cmd.reply_id))
+                    return result
                 else:
-                    return Reply(type=ReplyType.error, text=f'''Error: Command <{request.data}> not found.''', data=None)
+                    return [Reply(type=ReplyType.error, text=f'''Error: Command <{request.data}> not found.''', data=None)]
         except IntegrityError as e:
             raise CoreException(f'''ERROR: Request <{e.args[0]}>''')
-        
+
     def __get_menu__(self, menu_id: int) -> Reply:
         try:
             with Session(autoflush=False, bind=self.engine) as conn:

@@ -43,20 +43,20 @@ except Exception as x:
 async def core_request(request: Request):
     # Processing the request and returning data
     try:
-        reply = core.request(request)
         async with client.conversation(request.chat_id) as conv:
-            if ReplyType.message == reply.type:
-                for msg in reply.data:
-                    await conv.send_message(msg)
-            elif ReplyType.error == reply.type:
-                await conv.send_message(reply.text)
-                py_logger.error(f'''<{request.username}> {reply.text} <{request.type}> <{request.data}>''')
-            elif ReplyType.menu == reply.type:
-                buttons = [[Button.inline(btn[0], btn[1])] for btn in reply.data]
-                if  RequestType.text == request.type:
-                    await conv.send_message(reply.text, buttons=buttons)
-                elif RequestType.data == request.type:
-                    await client.edit_message(request.username, request.msg_id, reply.text, buttons=buttons)
+            for reply in core.request(request):
+                if ReplyType.message == reply.type:
+                    for msg in reply.data:
+                        await conv.send_message(msg)
+                elif ReplyType.error == reply.type:
+                    await conv.send_message(reply.text)
+                    py_logger.error(f'''<{request.username}> {reply.text} <{request.type}> <{request.data}>''')
+                elif ReplyType.menu == reply.type:
+                    buttons = [[Button.inline(btn[0], btn[1])] for btn in reply.data]
+                    if  RequestType.text == request.type:
+                        await conv.send_message(reply.text, buttons=buttons)
+                    elif RequestType.data == request.type:
+                        await client.edit_message(request.username, request.msg_id, reply.text, buttons=buttons)
     except CoreException as e:
         py_logger.error(e.error)
         exit(4)
