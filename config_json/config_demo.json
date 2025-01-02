@@ -1,6 +1,6 @@
 {
     "connect": {
-        "api_id": 0,
+        "api_id": 1000,
         "api_hash": "str_api_hash",
         "session": "str_session_name",
         "token": "str_secret_token",

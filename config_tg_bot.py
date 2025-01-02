@@ -7,7 +7,7 @@ from module.bot.core_exception import CoreException
 from module.bot.config import db_conn_str, log_path, print_log
 
 
-config_path = os.path.join('.', 'config_json', 'config_demo.json')
+config_path = os.path.join('.', 'config_json', 'config.json')
 
 py_logger = logging.getLogger(__name__)
 py_logger.setLevel(logging.INFO)
@@ -50,7 +50,7 @@ def main() -> None:
                 print(e)
             py_logger.critical(f'''Config not correct''')
         else:
-            cfg.to_db(db_conn_str)
+            cfg.save_to_db(db_conn_str)
     except CoreException as e:
         py_logger.critical(f'''{e.error}''')
         exit(1000)
