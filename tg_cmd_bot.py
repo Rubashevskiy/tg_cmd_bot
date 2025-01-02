@@ -8,32 +8,28 @@ from telethon.tl.patched import Message
 from telethon.errors import FloodWaitError
 import asyncio
 
-from module.core import Core
-from module.core_class import TgConfig, Request, RequestType, Reply, ReplyType
-from module.core_exception import CoreException
+from module.bot.config import print_log, log_path
+from module.bot.core import Core
+from module.bot.core_class import DbTgConn, Request, RequestType, Reply, ReplyType
+from module.bot.core_exception import CoreException
 
-# USER DATA
-conn_str= f'''sqlite:///{os.path.join('.', 'config', 'tg_bot_db.sqlite3')}'''
-session = "tg_cmd_bot"
 
 py_logger = logging.getLogger(__name__)
 py_logger.setLevel(logging.INFO)
-py_handler = logging.FileHandler(os.path.join('.', 'logs', 'tg_cmd_bot.log'), mode='a')
+py_handler = logging.FileHandler(os.path.join(log_path, 'tg_cmd_bot.log'), mode='a')
 py_formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
 py_handler.setFormatter(py_formatter)
 py_logger.addHandler(py_handler)
+if print_log: py_logger.addHandler(logging.StreamHandler())
 
 '''Connect to the Core and initialize the telegram client'''
 try:
-    py_logger.info(f'''RUN TG CMD BOT<{session}>: DB <{conn_str}>''')
-    core = Core(conn_str=conn_str)
-    cfg = core.get_tg_connect(session)
-    client = TelegramClient(session=cfg.session,
-                            api_id=cfg.api_id,
-                            api_hash=cfg.api_hash
-                           ).start(bot_token=cfg.token)
+    core = Core()
+    cfg = core.get_tg_connect()
+    py_logger.info(f'''RUN TG CMD BOT: <{cfg.session}>''')
+    client = TelegramClient(session=cfg.session, api_id=cfg.api_id, api_hash=cfg.api_hash).start(bot_token=cfg.token)
 except CoreException as e:
-    py_logger.critical(e.error)
+    py_logger.critical(f'''{e.msg} {e.data}''')
     exit(1)
 except Exception as x:
     py_logger.critical(x.args[0])
@@ -50,7 +46,9 @@ async def core_request(request: Request):
                         await conv.send_message(msg)
                 elif ReplyType.error == reply.type:
                     await conv.send_message(reply.text)
-                    py_logger.error(f'''<{request.username}> {reply.text} <{request.type}> <{request.data}>''')
+                    py_logger.error(f'''{reply.text}''')
+                    for e in reply.data:
+                        py_logger.error(f'''{e}''')
                 elif ReplyType.menu == reply.type:
                     buttons = [[Button.inline(btn[0], btn[1])] for btn in reply.data]
                     if  RequestType.text == request.type:
@@ -58,7 +56,7 @@ async def core_request(request: Request):
                     elif RequestType.data == request.type:
                         await client.edit_message(request.username, request.msg_id, reply.text, buttons=buttons)
     except CoreException as e:
-        py_logger.error(e.error)
+        py_logger.error(f'''{e.msg} {e.data}''')
         exit(4)
 
 async def handle_system_message():

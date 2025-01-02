@@ -1,0 +1,194 @@
+{
+    "connect": {
+        "api_id": 0,
+        "api_hash": "str_api_hash",
+        "session": "str_session_name",
+        "token": "str_secret_token",
+        "info": "str_info"
+    },
+    "users": [
+        {
+            "user_uid": "tg_user",
+            "info": "Main admin"
+        }
+    ],
+    "menu": [
+        {
+            "title": "Главное меню",
+            "buttons": [
+                {
+                    "text": "Первое меню",
+                    "data": "XN3G5Y1E",
+                    "cmd": [
+                        {
+                            "to_menu": "Первое меню"
+                        }
+                    ]
+                },
+                {
+                    "text": "Второе меню",
+                    "data": "3G9P9H5N",
+                    "cmd": [
+                        {
+                            "to_menu": "Второе меню"
+                        }
+                    ]
+                }
+            ],
+            "info": "Главное меню"
+        },
+        {
+            "title": "Первое меню",
+            "buttons": [
+                {
+                    "text": "Plugin 1",
+                    "data": "YY8LDZK1",
+                    "cmd": [
+                        {
+                            "to_plugin": "plugin_1"
+                        }
+                    ]
+                },
+                {
+                    "text": "Plugin 2",
+                    "data": "CBCUBCJS",
+                    "cmd": [
+                        {
+                            "to_plugin": "plugin_2"
+                        }
+                    ]
+                },
+                {
+                    "text": "Pl-1 and Pl-2",
+                    "data": "FP4PSNW1",
+                    "cmd": [
+                        {
+                            "to_plugin": "plugin_1"
+                        },
+                        {
+                            "to_plugin": "plugin_2"
+                        }
+                    ]
+                },
+                {
+                    "text": "Главное меню",
+                    "data": "KYVX2TAB",
+                    "cmd": [
+                        {
+                            "to_menu": "Главное меню"
+                        }
+                    ],
+                    "info": "Возврат в главное меню"
+                }
+            ]
+        },
+        {
+            "title": "Второе меню",
+            "buttons": [
+                {
+                    "text": "Plugin 3",
+                    "data": "8V8CLHZY",
+                    "cmd": [
+                        {
+                            "to_plugin": "plugin_3"
+                        }
+                    ]
+                },
+                {
+                    "text": "Plugin 4",
+                    "data": "LHIRCS04",
+                    "cmd": [
+                        {
+                            "to_plugin": "plugin_4"
+                        }
+                    ]
+                },
+                {
+                    "text": "Pl 3 and Pl 4, Первое меню",
+                    "data": "YNF2Z0RW",
+                    "cmd": [
+                        {
+                            "to_plugin": "plugin_3"
+                        },
+                        {
+                            "to_plugin": "plugin_4"
+                        },
+                        {
+                            "to_menu": "Первое меню"
+                        }
+                    ]
+                },
+                {
+                    "text": "Главное меню",
+                    "data": "CIHOCN6V",
+                    "cmd": [
+                        {
+                            "to_menu": "Главное меню"
+                        }
+                    ],
+                    "info": "Возврат в главное меню"
+                }
+            ]
+        }
+    ],
+    "plugins": [
+        {
+            "uid": "plugin",
+            "config": {
+                "test_text": "Test message Plugin Command"
+            },
+            "info": "test plugin"
+        },
+        {
+            "uid": "plugin_1",
+            "config": {
+                "test_text": "Test message Plugin 1"
+            }
+        },
+        {
+            "uid": "plugin_2",
+            "config": {
+                "test_text": "Test message Plugin 2"
+            }
+        },
+        {
+            "uid": "plugin_3",
+            "config": {
+                "test_text": "Test message Plugin 3"
+            }
+        },
+        {
+            "uid": "plugin_4",
+            "config": {
+                "test_text": "Test message Plugin 4"
+            }
+        }
+    ],
+    "text_command": [
+        {
+            "text": "/START",
+            "cmd": [
+                {
+                    "to_menu": "Главное меню"
+                }
+            ],
+            "info": "Главное меню"
+        },
+        {
+            "text": "MENU",
+            "cmd": [
+                {
+                    "to_menu": "Главное меню"
+                }
+            ]
+        },
+        {
+            "text": "PLUGIN",
+            "cmd": [
+                {
+                    "to_plugin": "plugin"
+                }
+            ]
+        }
+    ]
+}

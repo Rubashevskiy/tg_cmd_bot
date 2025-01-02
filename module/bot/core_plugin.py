@@ -3,7 +3,7 @@ import os
 import inspect
 
 
-class CorePluginManager():
+class CorePlugin():
     def __init__(self, plugin_path: str):
         self.plugins = {}
         dir_path = os.path.abspath(plugin_path)

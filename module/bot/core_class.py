@@ -12,20 +12,14 @@ class RequestType(enum.Enum):
 class ReplyType(enum.Enum):
     menu = 1
     message = 2
-    error = 3
+    file = 3
+    image = 4
+    error = 5
 
 class CmdType(enum.Enum):
     menu = 1
     plugin = 2
 
-@dataclass
-class TgConfig:
-    api_id: int
-    api_hash: str
-    session: str
-    token: str
-    root_uid: str
-    info: str
 
 @dataclass
 class Request:
@@ -50,20 +44,15 @@ class DbTgConn(Base):
     api_hash = Column(String, nullable=False)
     session = Column(String, nullable=False)
     token = Column(String, nullable=False)
-    root_uid = Column(String, nullable=False)
     info = Column(String, nullable=True)
     __table_args__ = (UniqueConstraint("session", name="uniq_session"),)
 
-class DbCommand(Base):
-    __tablename__ = "command"
+class DbTgUsers(Base):
+    __tablename__ = "tg_users"
     id = Column(Integer, primary_key=True, index=True)
-    request_type = Column(Integer, nullable=False)
-    request_text = Column(String, nullable=False)
-    reply_type = Column(Integer, nullable=False)
-    reply_id = Column(Integer, nullable=False)
-    sorting = Column(Integer, nullable=False)
+    user_uid = Column(String, nullable=False)
     info = Column(String, nullable=True)
-    __table_args__ = (UniqueConstraint("request_type", "request_text", "reply_type", "reply_id", name="uniq_cmd"),)
+    __table_args__ = (UniqueConstraint("user_uid", name="uniq_users"),)
 
 class DbMenu(Base):
     __tablename__ = "menu"
@@ -77,13 +66,35 @@ class DbButtons(Base):
     id = Column(Integer, primary_key=True, index=True)
     menu_id = Column(Integer, ForeignKey(DbMenu.id),nullable=False)
     btn_text = Column(String, nullable=False)
-    btn_data= Column(String, nullable=False)
+    btn_data = Column(String, nullable=False)
     sorting = Column(Integer, nullable=False)
     info = Column(String, nullable=True)
+    __table_args__ = (UniqueConstraint("menu_id", "btn_text", name="uniq_btn"),)
+
+class DbButtonCmd(Base):
+    __tablename__ = "button_cmd"
+    id = Column(Integer, primary_key=True, index=True)
+    btn_id = Column(Integer, ForeignKey(DbButtons.id),nullable=False)
+    cmd_type = Column(Integer, nullable=False)
+    cmd_id = Column(Integer, nullable=False)
+    sorting = Column(Integer, nullable=False)
+    info = Column(String, nullable=True)
+    __table_args__ = (UniqueConstraint("btn_id", "cmd_type", "cmd_id", name="uniq_btn_cmd"),)
+
+class DbTextCmd(Base):
+    __tablename__ = "text_command"
+    id = Column(Integer, primary_key=True, index=True)
+    cmd_text = Column(String, nullable=False)
+    cmd_type = Column(Integer, nullable=False)
+    cmd_id = Column(Integer, nullable=False)
+    sorting = Column(Integer, nullable=False)
+    info = Column(String, nullable=True)
+    __table_args__ = (UniqueConstraint("cmd_text", "cmd_type", "cmd_id", name="uniq_txt_cmd"),)
 
 class DbPlugin(Base):
     __tablename__ = "plugins"
     id = Column(Integer, primary_key=True, index=True)
-    plugin_uid = Column(String, nullable=False)
-    plugin_data = Column(String, nullable=False)
-    __table_args__ = (UniqueConstraint("plugin_uid", name="uniq_plugin"),)
+    uid = Column(String, nullable=False)
+    config = Column(String, nullable=False)
+    info = Column(String, nullable=True)
+    __table_args__ = (UniqueConstraint("uid", "data", "config", name="uniq_plugin"),)
