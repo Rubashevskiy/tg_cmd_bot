@@ -7,7 +7,7 @@ from module.bot.core_exception import CoreException
 from module.bot.config import db_conn_str, log_path, print_log
 
 
-config_path = os.path.join('.', 'module', 'config', 'config_demo.json')
+config_path = os.path.join('.', 'config_json', 'config_demo.json')
 
 py_logger = logging.getLogger(__name__)
 py_logger.setLevel(logging.INFO)

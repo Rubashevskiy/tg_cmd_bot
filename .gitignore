@@ -161,9 +161,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-config/config.json
 tg_cmd_bot.session
 tg_cmd_bot.session-journal
-module/config/config.json
 db/tg_bot_db.sqlite3
-module/config/config_test.json
+config_json/config.json
