@@ -1,0 +1,93 @@
+{
+    "connect": [
+        {"api_id": 999999999,
+         "api_hash": "str_api_hash",
+         "session": "str_name_session",
+         "token": "str_token",
+         "info": "Info connect"
+        }
+    ],
+    "users": [
+        {"name": "user_tg_cmd_bot",
+         "auto_msg": false,
+         "info": "Info user"
+        }
+    ],
+    "menu": [
+        {"text": "Main",
+         "info": "Main menu",
+         "buttons": [
+            {"text": "First menu",
+             "info": "info First menu",
+             "slot_type": "menu",
+             "slot_uid": "First menu"
+            },
+            {"text": "Второе меню",
+             "info": "info Второе меню",
+             "slot_type": "menu",
+             "slot_uid": "Второе меню",
+             "params": {}
+            }
+         ]
+        },
+        {"text": "First menu",
+         "buttons": [
+            {"text": "Плагин 1",
+             "slot_type": "plugin",
+             "slot_uid": "plugin_1",
+             "params": {"text" : "Hello World"}
+            },
+            {"text": "Plugin 2",
+             "slot_type": "plugin",
+             "slot_uid": "plugin_2"
+            },
+            {"text": "Main menu",
+             "info": "info Main menu",
+             "slot_type": "menu",
+             "slot_uid": "Main"
+            }
+         ]
+        },
+        {"text": "Второе меню",
+         "buttons": [
+            {"text": "Plugin 3",
+             "slot_type": "plugin",
+             "slot_uid": "plugin_3",
+             "params": {"text" : "Hello World"}
+            },
+            {"text": "Plugin base",
+             "slot_type": "plugin",
+             "slot_uid": "plugin_base",
+             "params": {}
+            },
+            {"text": "Главное меню",
+             "slot_type": "menu",
+             "slot_uid": "Main"
+            }
+         ]
+        }
+    ],
+    "text_command": [
+        {"text": "/start",
+         "info": "info Main menu",
+         "slot_type": "menu", 
+         "slot_uid": "Main"
+        },
+        {"text": "menu",
+         "info": "info Main menu",
+         "slot_type": "menu",
+         "slot_uid": "Main"
+        },
+        {"text": "pl",
+         "info": "info Run Plugin",
+         "slot_type": "plugin",
+         "slot_uid": "plugin_argv",
+         "params": {"text" : "Hello World"}
+        }
+    ],
+    "auto": [
+        {"plugin_uid": "plugin_1", "params": {}, "info": "info plugin 1"},
+        {"plugin_uid": "plugin_2", "params": {}, "info": "info plugin 2"},
+        {"plugin_uid": "plugin_3", "params": {"text" : "Hello World"}, "info": "info plugin 1"}
+    ]
+}
